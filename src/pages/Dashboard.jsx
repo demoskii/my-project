@@ -1,72 +1,113 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import TodoItem from "../components/TodoItem";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [todos, setTodos] = useState([]);
   const [newTask, setNewTask] = useState("");
-  const navigate = useNavigate();
 
+  const username = JSON.parse(localStorage.getItem("user"))?.username || "User";
+
+  // Fetch existing todos on load
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("loggedIn");
-    if (isLoggedIn !== "true") {
+    const loggedIn = localStorage.getItem("loggedIn");
+    if (loggedIn !== "true") {
       navigate("/login");
+      return;
     }
-  }, [navigate]);
 
-  useEffect(() => {
     fetch("http://localhost:5000/todos")
       .then((res) => res.json())
-      .then((data) => setTodos(data));
-  }, []);
+      .then((data) => setTodos(data))
+      .catch((err) => console.error("Failed to load todos:", err));
+  }, [navigate]);
 
-  const handleAddTask = async (e) => {
-    e.preventDefault();
-
+  const handleAddTodo = async () => {
     if (!newTask.trim()) return;
 
-    const response = await fetch("http://localhost:5000/todos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ task: newTask }),
-    });
+    const newTodo = {
+      task: newTask.trim(),
+    };
 
-    const data = await response.json();
-    setTodos((prev) => [...prev, data]);
-    setNewTask("");
+    try {
+      const res = await fetch("http://localhost:5000/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTodo),
+      });
+
+      const data = await res.json();
+      setTodos((prev) => [...prev, data]);
+      setNewTask("");
+    } catch (err) {
+      console.error("Failed to add task:", err);
+    }
   };
 
-  const handleDelete = async (id) => {
-    await fetch(`http://localhost:5000/todos/${id}`, {
+  const handleDelete = (id) => {
+    fetch(`http://localhost:5000/todos/${id}`, {
       method: "DELETE",
+    }).then(() => {
+      setTodos(todos.filter((todo) => todo.id !== id));
     });
+  };
+  
 
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  const handleUpdate = async (id, updatedText) => {
+    try {
+      const res = await fetch(`http://localhost:5000/todos/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task: updatedText }),
+      });
+
+      const data = await res.json();
+
+      setTodos((prev) =>
+        prev.map((todo) => (todo.id === id ? { ...todo, task: data.task } : todo))
+      );
+    } catch (err) {
+      console.error("Failed to update task:", err);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedIn");
+    navigate("/login");
   };
 
   return (
-    <div>
+    <div className="dashboard-container">
       <h2>Dashboard</h2>
-      <form onSubmit={handleAddTask}>
+      <p className="welcome-text">Welcome, {username}</p>
+
+      <div className="todo-input">
         <input
           type="text"
           placeholder="New Task"
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
         />
-        <button type="submit">Add</button>
-      </form>
+        <button onClick={handleAddTodo}>Add</button>
+      </div>
 
-      <ul>
+      <ul className="todo-list">
         {todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} onDelete={handleDelete} />
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+          />
         ))}
       </ul>
+
+      <button className="logout-btn" onClick={handleLogout}>
+        Logout
+      </button>
     </div>
   );
 }
 
 export default Dashboard;
-<h2>Welcome, {localStorage.getItem("username")}!</h2>
