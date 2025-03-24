@@ -3,16 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Fake auth using localStorage
     const savedUser = JSON.parse(localStorage.getItem("user"));
-    if (savedUser && savedUser.email === email && savedUser.password === password) {
+    if (
+      savedUser &&
+      savedUser.username === username &&
+      savedUser.password === password
+    ) {
       localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("username", savedUser.username);
       navigate("/dashboard");
     } else {
       alert("Invalid credentials");
@@ -24,10 +28,10 @@ function Login() {
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
         /><br />
         <input

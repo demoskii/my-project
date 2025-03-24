@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TodoItem from "../components/TodoItem";
 
 function Dashboard() {
-  const navigate = useNavigate();
   const [todos, setTodos] = useState([]);
   const [newTask, setNewTask] = useState("");
+  const navigate = useNavigate();
 
-  // 🔐 Redirect if not logged in
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("loggedIn");
     if (isLoggedIn !== "true") {
@@ -14,59 +14,54 @@ function Dashboard() {
     }
   }, [navigate]);
 
-  // 📥 Fetch all tasks on load
   useEffect(() => {
     fetch("http://localhost:5000/todos")
       .then((res) => res.json())
       .then((data) => setTodos(data));
   }, []);
 
-  // ➕ Add task
-  const handleAdd = async (e) => {
+  const handleAddTask = async (e) => {
     e.preventDefault();
+
     if (!newTask.trim()) return;
 
-    const newTodo = { text: newTask };
-    const res = await fetch("http://localhost:5000/todos", {
+    const response = await fetch("http://localhost:5000/todos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newTodo),
+      body: JSON.stringify({ task: newTask }),
     });
 
-    const added = await res.json();
-    setTodos([...todos, added]);
-    setNewTask(""); // Clear input
+    const data = await response.json();
+    setTodos((prev) => [...prev, data]);
+    setNewTask("");
   };
 
-  // ❌ Delete task
   const handleDelete = async (id) => {
     await fetch(`http://localhost:5000/todos/${id}`, {
       method: "DELETE",
     });
-    setTodos(todos.filter((todo) => todo.id !== id));
+
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
 
   return (
     <div>
-      <h2>Your To-Do List</h2>
-      <form onSubmit={handleAdd}>
+      <h2>Dashboard</h2>
+      <form onSubmit={handleAddTask}>
         <input
           type="text"
-          placeholder="Enter task"
+          placeholder="New Task"
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
         />
-        <button type="submit">Add Task</button>
+        <button type="submit">Add</button>
       </form>
 
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>
-            {todo.text}
-            <button onClick={() => handleDelete(todo.id)}>❌</button>
-          </li>
+          <TodoItem key={todo.id} todo={todo} onDelete={handleDelete} />
         ))}
       </ul>
     </div>
@@ -74,3 +69,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+<h2>Welcome, {localStorage.getItem("username")}!</h2>
