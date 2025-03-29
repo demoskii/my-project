@@ -6,10 +6,10 @@ function Dashboard() {
   const navigate = useNavigate();
   const [todos, setTodos] = useState([]);
   const [newTask, setNewTask] = useState("");
+  const [fadingId, setFadingId] = useState(null);
 
   const username = JSON.parse(localStorage.getItem("user"))?.username || "User";
 
-  // Fetch existing todos on load
   useEffect(() => {
     const loggedIn = localStorage.getItem("loggedIn");
     if (loggedIn !== "true") {
@@ -46,13 +46,17 @@ function Dashboard() {
   };
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/todos/${id}`, {
-      method: "DELETE",
-    }).then(() => {
-      setTodos(todos.filter((todo) => todo.id !== id));
-    });
+    setFadingId(id);
+
+    setTimeout(() => {
+      fetch(`http://localhost:5000/todos/${id}`, {
+        method: "DELETE",
+      }).then(() => {
+        setTodos((prev) => prev.filter((todo) => todo.id !== id));
+        setFadingId(null);
+      });
+    }, 300);
   };
-  
 
   const handleUpdate = async (id, updatedText) => {
     try {
@@ -74,6 +78,7 @@ function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("loggedIn");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
@@ -92,6 +97,10 @@ function Dashboard() {
         <button onClick={handleAddTodo}>Add</button>
       </div>
 
+      <p style={{ color: "#888", marginBottom: "10px" }}>
+        💡 <em>Click a task to edit it</em>
+      </p>
+
       <ul className="todo-list">
         {todos.map((todo) => (
           <TodoItem
@@ -99,13 +108,10 @@ function Dashboard() {
             todo={todo}
             onDelete={handleDelete}
             onUpdate={handleUpdate}
+            fadeOut={fadingId === todo.id}
           />
         ))}
       </ul>
-
-      <button className="logout-btn" onClick={handleLogout}>
-        Logout
-      </button>
     </div>
   );
 }

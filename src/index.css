@@ -49,4 +49,10 @@ input:focus {
   }
 }
 
+.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
 
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
