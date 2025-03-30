@@ -1,32 +1,81 @@
+/* Base styles */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #1e1e1e;
-  color: #eee;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 20px;
 }
 
+body[data-theme="dark"] {
+  background-color: #1e1e1e;
+  color: #eee;
+}
+
+body[data-theme="light"] {
+  background-color: #f5f5f5;
+  color: #222;
+}
+
+/* Layout */
 #root {
   width: 100%;
-  max-width: 600px;
-  padding: 40px 20px;
+  max-width: 1100px;
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+/* Links & Buttons */
+a {
+  color: inherit;
+  text-decoration: none;
+  margin-right: 18px;
+  font-size: 1.2em;
+}
+
+button {
+  cursor: pointer;
+  background-color: #111;
+  color: #fff;
+  border: none;
+  padding: 14px 26px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+  font-size: 1.1em;
 }
 
 button:hover {
-  background-color: #444;
+  background-color: #333;
   transform: scale(1.03);
-  transition: 0.2s ease;
+}
+
+/* Inputs */
+input {
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #999;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+  font-size: 1.1em;
+  background-color: inherit;
+  color: inherit;
 }
 
 input:focus {
-  border-color: #777;
+  border-color: #555;
   outline: none;
 }
 
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -49,10 +98,94 @@ input:focus {
   }
 }
 
-.fade-out {
-  animation: fadeOut 0.3s ease forwards;
-}
-
 .fade-in {
   animation: fadeIn 0.3s ease;
 }
+
+.fade-out {
+  animation: fadeOut 0.3s ease;
+}
+
+/* Todo list */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 30px 0;
+  width: 100%;
+  font-size: 1.2em;
+}
+
+.logout-btn {
+  margin-top: 35px;
+}
+
+/* Todo input layout */
+.todo-input {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 1.2em;
+}
+
+nav a, nav button {
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+nav .divider {
+  color: #888;
+  margin: 0 6px;
+}
+
+/* Form containers */
+.auth-form {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Icon handling */
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.input-with-icon input {
+  padding-left: 30px;
+}
+
+.input-with-icon .icon {
+  position: absolute;
+  left: 12px;
+  font-size: 1.2em;
+  pointer-events: none;
+  color: #888;
+}
+
+.input-with-icon .toggle-visibility {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 1.5em; /* Try 1.5em or more */
+  cursor: pointer;
+  opacity: 0.7;
+}
+
