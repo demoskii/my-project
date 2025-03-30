@@ -1,12 +1,32 @@
-# React + Vite
+# 📝 React To-Do App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Това е семпло, но функционално React приложение за управление на задачи. Създадено е като курсова работа и включва вход, регистрация, добавяне на задачи, светъл/тъмен режим и т.н.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Какво използвах
 
-## Expanding the ESLint configuration
+- **React** с Vite – за бърза и модерна разработка
+- **React Router** – за навигация
+- **Hooks (useState, useEffect)** – за динамично поведение
+- **JSON Server** – фалшив бекенд за съхранение на задачите
+- **CSS** – за стил и анимации
+- **GitHub** – за версиите
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ✅ Какво може приложението
+
+- Регистрация и вход с потребителско име и парола
+- Навигация според това дали си логнат
+- Добавяне, редактиране и триене на задачи
+- Всички задачи се пазят във фалшива база (`db.json`)
+- Темен превключвател (тъмна и светла тема)
+- Анимации при добавяне и премахване на задачи
+
+---
+
+## ▶️ Стартиране на базата данни и приложението
+
+npx json-server --watch db.json --port 5000
+npm run dev
